@@ -7,6 +7,7 @@ from apps.users import repository
 from apps.users.models import User, Roles
 from .security import decode_access_token
 
+from apps.products import repository as prod_repo
 from apps.sellers import repository as seller_repo
 
 oauth2 = OAuth2PasswordBearer(tokenUrl='auth/login')
@@ -71,3 +72,35 @@ def get_current_seller(db: Session = Depends(get_db), current_user: User = Depen
 
 
     return seller
+
+def require_product_owner_or_admin(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.role == Roles.ADMIN:
+        return current_user
+
+    if current_user.role != Roles.SELLER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={'msg':'You are not seller'}
+        )
+
+    product = prod_repo.get_product_by_id(db, product_id=product_id)
+
+    if product is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={'msg':'Product not found'}
+        )
+
+    seller = seller_repo.get_seller_by_user_id(db, user_id=current_user.id)
+
+    if seller is None or product.seller_id != seller.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={'msg':'You do not own this product'}
+        )
+
+    return current_user

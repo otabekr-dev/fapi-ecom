@@ -11,6 +11,7 @@ from apps.core.config import settings
 from apps.core.database import Base
 from apps.users.models import User, Roles
 from apps.sellers.models import SellerProfile
+from apps.products.models import Category, Product
 
 
 if config.config_file_name is not None:

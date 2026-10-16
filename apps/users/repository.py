@@ -1,15 +1,19 @@
 from sqlalchemy.orm import Session
 from .models import User
+from sqlalchemy import select
 
 def get_user_by_username(db: Session, username:str) -> User | None:
-    return db.query(User).filter(User.username==username.lower()).first()
+    result = db.execute(select(User).where(User.username==username))
+    return result.scalar_one_or_none()
 
 def get_user_by_id(db: Session, user_id:int) -> User | None:
-    return db.query(User).filter(User.id==user_id).first()
+    result = db.execute(select(User).where(User.id==user_id))
 
+    return result.scalar_one_or_none()
 
 def get_user_by_email(db: Session, email:str) -> User:
-    return db.query(User).filter(User.email==email).first()
+    result = db.execute(select(User).where(User.email==email))
+    return result.scalar_one_or_none()
 
 
 def create_user(db: Session, username:str, hashed_password:str, email: str | None = None) -> User:

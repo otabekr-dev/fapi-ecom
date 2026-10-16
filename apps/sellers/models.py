@@ -12,7 +12,7 @@ from apps.core.database import Base
 class SellerProfile(Base):
     __tablename__ = 'sellers'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id : Mapped[int] = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), unique=True)
     shop_name : Mapped[str] = mapped_column(String(100), unique=True)
     description : Mapped[str|None] = mapped_column(Text, nullable=True)

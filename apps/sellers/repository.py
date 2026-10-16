@@ -1,15 +1,19 @@
 from sqlalchemy.orm import Session
 from apps.sellers.models import SellerProfile
+from sqlalchemy import select
 
 
 def get_seller_by_id(db:Session, seller_id:int) -> SellerProfile | None:
-    return db.query(SellerProfile).filter(SellerProfile.id==seller_id).first()
+    result = db.execute(select(SellerProfile).where(SellerProfile.id==seller_id))
+    return result.scalar_one_or_none()
 
 def get_seller_by_user_id(db: Session, user_id:int) -> SellerProfile | None:
-    return db.query(SellerProfile).filter(SellerProfile.user_id==user_id).first()
+    result = db.execute(select(SellerProfile).where(SellerProfile.user_id==user_id))
+    return result.scalar_one_or_none()
 
 def get_seller_by_shop_name(db:Session, shop_name:str)-> SellerProfile | None:
-    return db.query(SellerProfile).filter(SellerProfile.shop_name==shop_name).first()
+    result = db.execute(select(SellerProfile).where(SellerProfile.shop_name==shop_name))
+    return result.scalar_one_or_none()
 
 def create_seller(db:Session, shop_name:str, user_id:int, description:str | None = None)-> SellerProfile:
     seller = SellerProfile(shop_name=shop_name, description=description, user_id=user_id)
@@ -47,9 +51,11 @@ def list_sellers(
     limit:int = 20,
     is_active: bool | None = None 
 )-> list[SellerProfile]:
-    query = db.query(SellerProfile)
+    query = select(SellerProfile)
 
     if is_active is not None:
-        query = query.filter(SellerProfile.is_active==is_active)
+        query = query.where(SellerProfile.is_active==is_active)
 
-    return query.order_by(SellerProfile.id).offset(skip).limit(limit).all()
+    query = query.order_by(SellerProfile.id).offset(skip).limit(limit)
+
+    return db.execute(query).scalars().all()
