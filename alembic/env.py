@@ -12,6 +12,8 @@ from apps.core.database import Base
 from apps.users.models import User, Roles
 from apps.sellers.models import SellerProfile
 from apps.products.models import Category, Product
+from apps.carts.models import Cart, CartItems
+from apps.orders.models import OrderItem, Order, Status
 
 
 if config.config_file_name is not None:
