@@ -26,7 +26,7 @@ class Order(Base):
     total_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    items: Mapped['OrderItem'] = relationship(back_populates='order')
+    items: Mapped[list['OrderItem']] = relationship(back_populates='order')
 
 
 class OrderItem(Base):

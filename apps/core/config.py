@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     jwt_secret:str
     jwt_algorithm:str = 'HS256'
     access_token_expire_minutes:int = 60
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
     ADMIN_USERNAME:str
     ADMIN_PASSWORD:str
 

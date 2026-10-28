@@ -9,7 +9,7 @@ class OrderItemOut(BaseModel):
     product_id:int
     quantity: int
     price: Decimal
-    products: ProductOut
+    product: ProductOut
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -28,4 +28,4 @@ class OrderOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class OrderStatusUpdate(BaseModel):
-    status: Status    
+    status: Status
